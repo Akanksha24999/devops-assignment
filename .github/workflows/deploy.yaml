@@ -12,14 +12,12 @@ jobs:
       - name: Deploy to Server via SSH
         uses: appleboy/ssh-action@master
         with:
+        # 13.201.42.158
           host: ${{ secrets.SERVER_IP }}
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-        
             cd ~/devops/devops-assignment
-           
             git pull origin main
-            
             docker compose down
             docker compose up -d --build
