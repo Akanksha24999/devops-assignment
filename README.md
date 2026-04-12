@@ -32,4 +32,8 @@ Deployment: The pipeline pulls the latest code, rebuilds the images, and restart
 - Start the system: docker-compose up -d --build.
 - Access the app: Open http://13.201.42.158 in your browser.
 9. Live Public IP: http://13.201.42.158
-10.  I added terraform automation as a bonus additional step.
+10.  I added terraform automation as a bonus additional step. The Terraform configuration in this project uses the following components to automate the AWS infrastructure:
+- Infrastructure as Code (IaC) with AWS: It uses the AWS provider to provision resources like security groups for the load       balancer within a specified region.
+- Auto Scaling for High Availability: An Auto Scaling Group is configured to maintain instances, ensuring the application can handle traffic and recover from failures.
+- Automated Traffic Routing: An Application Load Balancer is used to distribute public traffic to instances, while a Target Group monitors their health to ensure requests are only sent to working servers.
+- Automated Application Deployment: A Launch Template uses a "user data" script to automatically update the server, pull the latest code from GitHub, and start the application using Docker Compose upon boot.
