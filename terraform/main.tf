@@ -41,7 +41,7 @@ resource "aws_security_group" "alb_sgp" {
 
 # Security Group for EC2 Instances
 resource "aws_security_group" "ec2_sg" {
-  name_prefix = "ec2_sg"
+  name_prefix = "ec2_sg1"
   vpc_id      = data.aws_vpc.default.id
 
   # Inbound Rules (Ingress)
@@ -82,7 +82,7 @@ resource "aws_launch_template" "example" {
   systemctl enable httpd
   
   # 3. Create a simple home page
-   c cd ~/devops-assignment
+            cd ~/devops-assignment
             git pull origin main
             docker compose down
             docker compose up -d --build
@@ -92,6 +92,50 @@ resource "aws_launch_template" "example" {
 EOF
 )
 }
+
+# Auto Scaling Group
+resource "aws_autoscaling_group" "sgp" {
+  desired_capacity          = 2
+  max_size                  = 4
+  min_size                  = 2
+  vpc_zone_identifier       = data.aws_subnets.default.ids
+
+launch_template {
+    id      = aws_launch_template.example.id
+    version = "$Latest"
+  }
+
+   target_group_arns = [aws_lb_target_group.tgp.arn]
+
+   tag {
+      key                 = "Name"
+      value               = "App-Instance"
+      propagate_at_launch = true
+   }
+
+lifecycle {
+  create_before_destroy = true
+}
+
+}
+
+# Auto Scaling Policies
+resource "aws_autoscaling_policy" "scale_up" {
+   name                 = "scale_up"
+   scaling_adjustment    = 1
+  adjustment_type        = "ChangeInCapacity"
+  cooldown               = 300
+  autoscaling_group_name = aws_autoscaling_group.sgp.name
+}
+
+resource "aws_autoscaling_policy" "scale_down" {
+   name                 = "scale_down"
+   scaling_adjustment    = -1
+  adjustment_type        = "ChangeInCapacity"
+  cooldown               = 300
+  autoscaling_group_name = aws_autoscaling_group.sgp.name
+}
+
 
 # Application Load balancer
 resource "aws_lb" "alb" {
