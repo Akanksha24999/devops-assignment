@@ -27,9 +27,9 @@ Deployment: The pipeline pulls the latest code, rebuilds the images, and restart
    Root Cause     : Missing dependencies in Dockerfile
    Fix Applied    : Updated Dockerfile to include all necessary build steps.
 8. Deployment Steps:To run this project locally or on a new server:
-Clone the repo: git clone https://github.com/Akanksha24999/devops-assignment.git
-Navigate to directory: cd devops-assignment
-Start the system: docker-compose up -d --build.
-Access the app: Open http://13.201.42.158 in your browser.
+- Clone the repo: git clone https://github.com/Akanksha24999/devops-assignment.git
+- Navigate to directory: cd devops-assignment
+- Start the system: docker-compose up -d --build.
+- Access the app: Open http://13.201.42.158 in your browser.
 9. Live Public IP: http://13.201.42.158
 10.  I added terraform automation as a bonus additional step.
