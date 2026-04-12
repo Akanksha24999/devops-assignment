@@ -50,6 +50,7 @@ resource "aws_security_group" "ec2_sg" {
     to_port     = var.server_port
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
+    
   }
   # Outbound Rules (Egress)
   egress {
@@ -71,24 +72,27 @@ resource "aws_launch_template" "example" {
     security_groups             = [aws_security_group.ec2_sg.id]
   }
 
-    user_data = base64encode(<<-EOF
+   user_data = base64encode(<<-EOF
   #!/bin/bash
-  # 1. Update and install software
+  # 1. Update system and install Docker
   yum update -y
-  yum install -y httpd
-  
-  # 2. Start the service
-  systemctl start httpd
-  systemctl enable httpd
-  
-  # 3. Create a simple home page
-            cd ~/devops-assignment
-            git pull origin main
-            docker compose down
-            docker compose up -d --build
+  yum install -y docker git
+  systemctl start docker
+  systemctl enable docker
 
-  # 4. Restart Apache to apply changes
-    systemctl restart httpd
+  # 2. Install Docker Compose plugin
+  mkdir -p /usr/local/lib/docker/cli-plugins/
+  curl -SL https://github.com/docker/compose/releases/latest/download/docker-compose-linux-x86_64 -o /usr/local/lib/docker/cli-plugins/docker-compose
+  chmod +x /usr/local/lib/docker/cli-plugins/docker-compose
+
+  # 3. Clone the project
+  mkdir -p /app
+  cd /app
+  git clone https://github.com/Akanksha24999/devops-assignment.git .
+
+  # 4. Start the application using Docker Compose
+  # We use the plugin syntax 'docker compose'
+  docker compose up -d --build
 EOF
 )
 }
