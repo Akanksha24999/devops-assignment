@@ -72,36 +72,14 @@ resource "aws_launch_template" "example" {
     security_groups             = [aws_security_group.ec2_sg.id]
   }
 
-   user_data = base64encode(<<-EOF
-  #!/bin/bash
-  # 1. Update system and install Docker
-  yum update -y
-  yum install -y docker git
-  systemctl start docker
-  systemctl enable docker
-
-  # 2. Install Docker Compose plugin
-  mkdir -p /usr/local/lib/docker/cli-plugins/
-  curl -SL https://github.com/docker/compose/releases/latest/download/docker-compose-linux-x86_64 -o /usr/local/lib/docker/cli-plugins/docker-compose
-  chmod +x /usr/local/lib/docker/cli-plugins/docker-compose
-
-  # 3. Clone the project
-  mkdir -p /app
-  cd /app
-  git clone https://github.com/Akanksha24999/devops-assignment.git .
-
-  # 4. Start the application using Docker Compose
-  # We use the plugin syntax 'docker compose'
-  docker compose up -d --build
-EOF
-)
+user_data = filebase64("script.sh")
 }
 
 # Auto Scaling Group
 resource "aws_autoscaling_group" "sgp" {
-  desired_capacity          = 2
-  max_size                  = 4
-  min_size                  = 2
+  desired_capacity          = 1
+  max_size                  = 1
+  min_size                  = 1
   vpc_zone_identifier       = data.aws_subnets.default.ids
 
 launch_template {
