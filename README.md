@@ -13,29 +13,16 @@ Frontend Hosting: Nginx serves the static HTML/JS files directly to the user's b
 Trigger: On every push to the main branch.
 SSH Connection: The runner connects to the Cloud VM (e.g., AWS EC2 or Oracle Cloud).
 Deployment: The pipeline pulls the latest code, rebuilds the images, and restarts the containers using docker-compose up -d --build.
-7. Debugging: Issues Found & Fixes:
-- Issue Identified: Containers couldn't talk.
-   Root Cause     : Missing shared Docker network
-   Fix Applied    : Added a custom bridge network in docker-compose.yml
-- Issue Identified: WS Connection Failed
-   Root Cause     : Nginx missing Upgrade headers
-   Fix Applied    : Added proxy_set_header Upgrade in nginx.conf
-- Issue Identified: 404 on Frontend
-   Root Cause     : Wrong file path in Nginx
-   Fix Applied    : Updated the root directive to point to the correct folder
-- Issue Identified: App Crash on Boot
-   Root Cause     : Missing dependencies in Dockerfile
-   Fix Applied    : Updated Dockerfile to include all necessary build steps.
-8. Deployment Steps:To run this project locally or on a new server:
+7. Deployment Steps:To run this project locally or on a new server:
 - Clone the repo: git clone https://github.com/Akanksha24999/devops-assignment.git
 - Navigate to directory: cd devops-assignment
 - Start the system: docker-compose up -d --build.
 - Access the app: Open http://13.201.42.158 in your browser.
-9. Live Public IP: http://13.201.42.158
+8. Live Public IP: http://13.201.42.158
 <<<<<<< HEAD
-10.  I added terraform automation as a bonus additional step. The Terraform configuration in this project uses the following components to automate the AWS infrastructure:
+9. The Terraform configuration in this project uses the following components to automate the AWS infrastructure:
 The Terraform configuration in this project uses the following components to automate the AWS infrastructure:
-- Infrastructure as Code (IaC) with AWS: It uses the AWS provider to provision resources like security groups for the load       balancer within a specified region.
+- Infrastructure as Code (IaC) with AWS: It uses the AWS provider to provision resources like security groups for the load balancer within a specified region.
 - Auto Scaling for High Availability: An Auto Scaling Group is configured to maintain instances, ensuring the application can handle traffic and recover from failures.
 - Automated Traffic Routing: An Application Load Balancer is used to distribute public traffic to instances, while a Target Group monitors their health to ensure requests are only sent to working servers.
 - Automated Application Deployment: A Launch Template uses a "user data" script to automatically update the server, pull the latest code from GitHub, and start the application using Docker Compose upon boot.
